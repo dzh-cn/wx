@@ -2,6 +2,8 @@ package com.dong.wx.utils;
 
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -14,6 +16,8 @@ import java.io.StringWriter;
  */
 public abstract class VelocityUtil {
 
+    private static Logger log = LoggerFactory.getLogger(VelocityUtil.class);
+
     /**
      * 渲染字符串
      * @Author dongzhihua
@@ -21,6 +25,7 @@ public abstract class VelocityUtil {
      */
     public static String evaluate(String template, Object param) {
 
+        log.info("evaluate > template: {}, param: {}", template, param);
         VelocityContext context = new VelocityContext();
         context.internalPut("obj", param);
 

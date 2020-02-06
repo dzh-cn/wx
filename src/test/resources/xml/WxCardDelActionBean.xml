@@ -1,0 +1,10 @@
+<!-- 微信卡包删除通知 https://developers.weixin.qq.com/doc/offiaccount/Cards_and_Offer/Coupons_Vouchers_and_Cards_Event_Push_Messages.html -->
+<xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[FromUser]]></FromUserName>
+    <CreateTime>123456789</CreateTime>
+    <MsgType><![CDATA[event]]></MsgType>
+    <Event><![CDATA[user_del_card]]></Event>
+    <CardId><![CDATA[cardid]]></CardId>
+    <UserCardCode><![CDATA[12312312]]></UserCardCode>
+</xml>

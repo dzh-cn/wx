@@ -1,5 +1,6 @@
 package com.dong.wx.utils;
 
+import org.apache.velocity.app.Velocity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -395,6 +396,36 @@ public class WeChatUtil {
     }
 
     /**
+     * 保存卡片，通过模板
+     * @Author dongzhihua
+     * @Date 2020-02-06 21:00
+     */
+    public static String saveCardByTemplate(String accessToken, String paramTemplate, Object templateParam, boolean isCreate) {
+        String json = VelocityUtil.evaluate(paramTemplate, templateParam);
+        return saveCard(accessToken, json, isCreate);
+    }
+
+    /**
+     * 保存卡片
+     * @Author dongzhihua
+     * @Date 2020-02-06 21:00
+     */
+    public static String saveCard(String accessToken, String param, boolean isCreate) {
+
+        String url;
+        if (isCreate) {
+            url = createCardUrl + accessToken;
+        } else {
+            url = updateCardUrl + accessToken;
+        }
+        try {
+            return sendPost(url, param);
+        } catch (Exception e) {
+            throw new RuntimeException("创建通用卡异常", e);
+        }
+    }
+
+    /**
      * 创建卡片
      * @Author dongzhihua
      * @Date 2020-02-03 18:29
@@ -468,15 +499,9 @@ public class WeChatUtil {
                 "  }\n" +
                 "}";
 
-        String url;
-        if (isCreate) {
-            url = createCardUrl + accessToken;
-        } else {
-            url = updateCardUrl + accessToken;
-        }
         try {
             String param = VelocityUtil.evaluate(paramTemp, map);
-            return sendPost(url, param);
+            return saveCard(accessToken, param, isCreate);
         } catch (Exception e) {
             throw new RuntimeException("创建通用卡异常", e);
         }
@@ -566,6 +591,7 @@ public class WeChatUtil {
      * @Date 2020-02-03 18:08
      */
     public static String sendPost(String url, String param) throws Exception {
+        logger.info("sendPost > url: {}, param: {}", url, param);
         OutputStreamWriter out = null;
         BufferedReader in = null;
         HttpURLConnection conn = null;

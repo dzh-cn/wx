@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-class SaxUtilTest {
+class XmlParseSaxUtilTest {
 
     @Test
     void parse() {
-        File file = new File("/Users/dongzhihua/Documents/project/wx/src/test/resources/xml/get.xml");
-        Object bean = SaxUtil.parseToMap(file);
+        File file = new File("/Users/dongzhihua/Documents/project/wx/src/test/resources/xml/WxGetCardActionBean.xml");
+        Object bean = XmlParseSaxUtil.parseToMap(file);
         String s = JacksonUtils.toJson(bean);
         System.out.println(JacksonUtils.toJson(s));
         WxGetCardActionBean wgc = JacksonUtils.readValue(s, WxGetCardActionBean.class);

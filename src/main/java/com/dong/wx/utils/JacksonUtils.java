@@ -100,4 +100,14 @@ public abstract class JacksonUtils {
         return mapper.getTypeFactory().constructParametricType(collectionClass, elementClasses);
     }
 
+    /**
+     * map to bean
+     * @Author dongzhihua
+     * @Date 2020-02-06 09:55
+     */
+    public static <T> T mapToBean(Map<String, Object> map, Class<T> cla) {
+        String json = toJson(map);
+        LOGGER.info("mapToBean > json: {}", json);
+        return readValue(json, cla);
+    }
 }

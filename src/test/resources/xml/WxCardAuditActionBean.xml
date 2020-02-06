@@ -1,0 +1,10 @@
+<!-- 审核事件推送 https://developers.weixin.qq.com/doc/offiaccount/Cards_and_Offer/Coupons_Vouchers_and_Cards_Event_Push_Messages.html -->
+<xml>
+    <ToUserName><![CDATA[toUser]]></ToUserName>
+    <FromUserName><![CDATA[FromUser]]></FromUserName>
+    <CreateTime>123456789</CreateTime>
+    <MsgType><![CDATA[event]]></MsgType>
+    <Event><![CDATA[card_pass_check]]></Event> //不通过为card_not_pass_check
+    <CardId><![CDATA[cardid]]></CardId>
+    <RefuseReason><![CDATA[非法代制]]></RefuseReason>
+</xml>

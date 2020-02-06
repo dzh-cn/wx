@@ -1,16 +1,20 @@
 package com.dong.wx.utils;
 
 
+import com.dong.wx.beans.WxCardParam;
+import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class WeChatUtilTest {
-    String app = "wx36eded4e9c811a90";
-    String sec = "beeee4bc5d7243c01c61ddfaedb044ee";
-    String accessToken = "30_Nm-VeWQcjZdnRecRvaXxq79bpedH2SRjAq2_R4tUXBVmWAX_HTu8Q8T5jKDWX1RHhOZhjawiK5HgZXY0WulXr8y39ImHPNV5fDdAVb4GdLW-EjfDSJUGde6eCHoDIQgAHATYG";
+    String app = "wx81c571702b5f3680";
+    String sec = "ea00bac8ac711f0fb6aa5cc68ec03c5d";
+    String accessToken = "30_hqNWDbclZw5HROSIB9jE-maCvBLJmZbMPqpD3szjQkd-GP9FlqZrZJaY_zBg-vMcw62YAlCZlZPabuIq687OFmuVl9V97ATqvOZcCfZ1WUYpQjIjJVABTWlNgsqQ5Mj_G0wzDscq-gyTLG5PNAHeAIAQDK";
     String cardId = "pRR0Ss78_Yvew1FnHWnr2CXHpEms";
 
     @Test
@@ -36,14 +40,27 @@ public class WeChatUtilTest {
 
     @Test
     public void uploadImg() {
-        String res = WeChatUtil.uploadImg(accessToken, new File("/Users/dongzhihua/Documents/abc.jpeg"));
+        String res = WeChatUtil.uploadImg(accessToken, new File("/Users/dongzhihua/Documents/logo.png"));
         System.out.println(res);
-        // {"url":"http://mmbiz.qpic.cn/mmbiz_jpg/A5vYnILS59Uk6VPAibMYCBxM3OfNW7iaSCWLICzLPxjgPX2KaEYpxD2iaE5ibGbZzBjdBR0lQf3dTric6qLblSicicCNg/0"}
+        System.out.print(res.replaceAll("\\\\", ""));
+        // back http://mmbiz.qpic.cn/mmbiz_jpg/A5vYnILS59VktFAT5c4biaUoLakQ3icict9mLJwsOXHzIkmicESem65TGlSibUSYfsfPRLdKCL4icvJoAOkB7yMTfgBA/0
+        // logo http://mmbiz.qpic.cn/mmbiz_png/A5vYnILS59VktFAT5c4biaUoLakQ3icict9ibwd28dCkFdP8220jQzewLicfTPVV3ojNGw7beCAPIIaqemS8icVLIibjw/0
     }
 
     @Test
     public void saveGeneralCard() {
         String res = WeChatUtil.saveGeneralCard(accessToken, true);
+        System.out.println(res);
+    }
+
+    @Test
+    public void saveCardByTemplate() throws IOException {
+
+        String tem = FileUtils.readFileToString(new ClassPathResource("json/createCardTemplate.json").getFile(), "utf8");
+        String beanJson = FileUtils.readFileToString(new ClassPathResource("beans/WxCardParam.json").getFile(), "utf8");
+        WxCardParam wxCardParam = JacksonUtils.readValue(beanJson, WxCardParam.class);
+
+        String res = WeChatUtil.saveCardByTemplate(accessToken, tem, wxCardParam, true);
         System.out.println(res);
     }
 
