@@ -6,7 +6,7 @@
       "base_info": {
         "logo_url": "$obj.logoUrl",
         "brand_name": "$obj.brandName",
-        "code_type": "CODE_TYPE_NONE",
+        "code_type": "CODE_TYPE_TEXT",
         "title": "$obj.title",
         "color": "Color010",
         "notice": "使用时出示此卡",
@@ -15,7 +15,7 @@
           "type": "DATE_TYPE_PERMANENT"
         },
         "sku": {
-          "quantity": 50000000
+          "quantity": 0
         },
         "get_limit": 1,
         "use_custom_code": true,
@@ -29,7 +29,7 @@
       "supply_bonus": false,
       "supply_balance": false,
       "prerogative": "$obj.prerogative",
-      "activate_url": "$obj.activateUrl",
+      "auto_activate": true,
       "custom_field1": {
         "name": "$obj.customField1Name",
         "url": "$obj.customField1Url"

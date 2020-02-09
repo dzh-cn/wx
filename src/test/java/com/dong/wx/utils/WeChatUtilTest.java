@@ -1,21 +1,32 @@
 package com.dong.wx.utils;
 
 
-import com.dong.wx.beans.WxCardParam;
+import com.dong.wx.beans.WxCreateCardBean;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.Assert;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+@SpringBootTest
 public class WeChatUtilTest {
     String app = "wx81c571702b5f3680";
     String sec = "ea00bac8ac711f0fb6aa5cc68ec03c5d";
-    String accessToken = "30_hqNWDbclZw5HROSIB9jE-maCvBLJmZbMPqpD3szjQkd-GP9FlqZrZJaY_zBg-vMcw62YAlCZlZPabuIq687OFmuVl9V97ATqvOZcCfZ1WUYpQjIjJVABTWlNgsqQ5Mj_G0wzDscq-gyTLG5PNAHeAIAQDK";
-    String cardId = "pRR0Ss78_Yvew1FnHWnr2CXHpEms";
+
+    public static String accessTokenKey = "accessToken";
+    public static String cardIdKey = "cardId";
+
+    @Resource
+    RedisTemplate<String, String> redisTemplate;
 
     @Test
     public void getopenid() {
@@ -29,9 +40,14 @@ public class WeChatUtilTest {
     }
 
     @Test
-    public void getAccessToken() {
+    public void refreshAccessToken() {
         String accessToken = WeChatUtil.getAccessToken(app, sec);
-        System.out.println(accessToken);
+        redisTemplate.opsForValue().set(accessTokenKey, accessToken);
+        System.out.println(redisTemplate.opsForValue().get(accessTokenKey));
+    }
+
+    public String getAccessToken() {
+        return redisTemplate.opsForValue().get(accessTokenKey);
     }
 
     @Test
@@ -40,83 +56,101 @@ public class WeChatUtilTest {
 
     @Test
     public void uploadImg() {
-        String res = WeChatUtil.uploadImg(accessToken, new File("/Users/dongzhihua/Documents/logo.png"));
-        System.out.println(res);
-        System.out.print(res.replaceAll("\\\\", ""));
+        String url = WeChatUtil.uploadImg(getAccessToken(), new File("/Users/dongzhihua/Documents/logo.png"));
+        System.out.println(url);
         // back http://mmbiz.qpic.cn/mmbiz_jpg/A5vYnILS59VktFAT5c4biaUoLakQ3icict9mLJwsOXHzIkmicESem65TGlSibUSYfsfPRLdKCL4icvJoAOkB7yMTfgBA/0
         // logo http://mmbiz.qpic.cn/mmbiz_png/A5vYnILS59VktFAT5c4biaUoLakQ3icict9ibwd28dCkFdP8220jQzewLicfTPVV3ojNGw7beCAPIIaqemS8icVLIibjw/0
     }
 
     @Test
     public void saveGeneralCard() {
-        String res = WeChatUtil.saveGeneralCard(accessToken, true);
+        String res = WeChatUtil.saveGeneralCard(getAccessToken(), true);
         System.out.println(res);
     }
 
     @Test
     public void saveCardByTemplate() throws IOException {
+// pylauwfAvshLKJsPlBzFBi6fI8EA
+//        String jsonTemp = "json/GrouponCard.json";
+        String jsonTemp = "json/MemberCard.json";
+        String tem = FileUtils.readFileToString(new ClassPathResource(jsonTemp).getFile(), "utf8");
+        String beanJson = FileUtils.readFileToString(new ClassPathResource("beans/WxCreateCardBean.json").getFile(), "utf8");
+        WxCreateCardBean wxCreateCardBean = JsonUtils.readValue(beanJson, WxCreateCardBean.class);
 
-        String tem = FileUtils.readFileToString(new ClassPathResource("json/createCardTemplate.json").getFile(), "utf8");
-        String beanJson = FileUtils.readFileToString(new ClassPathResource("beans/WxCardParam.json").getFile(), "utf8");
-        WxCardParam wxCardParam = JacksonUtils.readValue(beanJson, WxCardParam.class);
+        String card_id = WeChatUtil.saveCardByTemplate(getAccessToken(), tem, wxCreateCardBean, true);
+        redisTemplate.opsForValue().set(cardIdKey, card_id);
+    }
 
-        String res = WeChatUtil.saveCardByTemplate(accessToken, tem, wxCardParam, true);
-        System.out.println(res);
+    @Test
+    public void depositCardCode() {
+        List<String> codes = new ArrayList<>();
+        for (int i = 1; i <= 10; i++) {
+            codes.add(String.format("L%05d", i));
+        }
+        String cardId = redisTemplate.opsForValue().get(cardIdKey);
+
+        WeChatUtil.depositCardCode(getAccessToken(), cardId, codes);
+    }
+
+    @Test
+    public void updateStock() {
+        String cardId = redisTemplate.opsForValue().get(cardIdKey);
+        WeChatUtil.updateStock(getAccessToken(), cardId, 10, 0);
     }
 
     @Test
     public void createGetCardQrcode() {
-        String openId = "oRR0Ss9hz1r5x-XEeWYEhpSeRwiQ";
-        String code = "108342023";
-        String res = WeChatUtil.createGetCardQrcode(accessToken, cardId, code, openId);
+        String openId = "oylauwX9xtuanvKxpsm8DTE-Ow_8";
+        openId = null;
+        String code = "L00006";
+        String cardId = redisTemplate.opsForValue().get(cardIdKey);
+        String res = WeChatUtil.createGetCardQrcode(getAccessToken(), cardId, code, openId);
         System.out.println(res);
+        assertRes(res);
+        System.out.println(res.replaceAll("\\\\", ""));
+        System.out.println(JsonUtils.readMap(res).get("show_qrcode_url"));
+    }
+
+    @Test
+    public void createGetCardH5() {
+        String cardId = redisTemplate.opsForValue().get(cardIdKey);
+        String res = WeChatUtil.createGetCardH5(getAccessToken(), cardId);
+        System.out.println(res);
+        assertRes(res);
+        System.out.println(res.replaceAll("\\\\", ""));
+        System.out.println(JsonUtils.readMap(res).get("url"));
+    }
+
+    @Test
+    public void getApiTicket() {
+        Object apiTicket = WeChatUtil.getApiTicket(getAccessToken());
+        System.out.println(apiTicket);
     }
 
     @Test
     public void activeCard() {
-        String code = "";
-        String cardNo = "";
-        String picUrl = "";
-        String cardId = "";
-        String res = WeChatUtil.activeCard(accessToken, code, cardNo, cardId, picUrl);
+//  {"isRestoreMemberCard":"1","msgType":"event","unionId":"oAAAAALeacKdruTOmqpU4dlLF0U8","isRecommendByFriend":"0","fromUserName":"oylauwX9xtuanvKxpsm8DTE-Ow_8","sourceScene":"SOURCE_SCENE_QRCODE","createTime":"1581178818","cardId":"pylauwQXtGhkRoaG-SFkkIwkHmzw","toUserName":"gh_bed3df181e1e","isGiveByFriend":"0","outerId":"0","event":"user_get_card","userCardCode":"L00001"}
+        String code = "L00001";
+        String cardNo = "L00001";
+        String picUrl = "http://mmbiz.qpic.cn/mmbiz_jpg/A5vYnILS59VktFAT5c4biaUoLakQ3icict9mLJwsOXHzIkmicESem65TGlSibUSYfsfPRLdKCL4icvJoAOkB7yMTfgBA/0";
+        String cardId = redisTemplate.opsForValue().get(cardIdKey);
+        String res = WeChatUtil.activeCard(getAccessToken(), code, cardNo, cardId, picUrl);
         System.out.println(res);
+        assertRes(res);
     }
 
     @Test
     public void httpPost() throws Exception {
         Map<String, Object> param = new HashMap<>();
         param.put("name", "dzh");
-        String res = WeChatUtil.sendPost("http://localhost:8080/t", JacksonUtils.toJson(param));
+        String res = WeChatUtil.sendPost("http://localhost:8080/t", JsonUtils.toJson(param));
         System.out.println(res);
     }
 
-    @Test
-    public void ve() {
-
-        String str = "My name is $obj.name, $obj.age";
-        Map<String, Object> param = new HashMap<>();
-        param.put("name", "lth");
-        param.put("age", 18);
-
-        String evaluate = VelocityUtil.evaluate(str, param);
-        System.out.println(evaluate);
-    }
-
-    public static class Desc{
-        String name = "lth";
-        Integer age = 18;
-
-        public String getName() {
-            return name;
-        }
-
-        public Integer getAge() {
-            return age;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
+    void assertRes(String res) {
+        Map<String, Object> map = JsonUtils.readMap(res);
+        Object code = map.get("errcode");
+        boolean suc = code == null || code.toString().equals("0");
+        Assert.isTrue(suc, map.get("errmsg").toString());
     }
 }

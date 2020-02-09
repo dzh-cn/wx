@@ -1,6 +1,7 @@
 package com.dong.wx.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -14,15 +15,18 @@ import java.util.*;
  * @Author: WangYuan
  * @CreateDate: 2019-07-30
  */
-public abstract class JacksonUtils {
+public abstract class JsonUtils {
 
     public static final String EMPTY_JSON = "{}";
 
     public static final String EMPTY_JSON_ARRAY = "[]";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JacksonUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JsonUtils.class);
 
     private static final ObjectMapper mapper = new ObjectMapper();
+    static {
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    }
 
     public static String toJson(Object object){
         if(object==null){
@@ -105,9 +109,12 @@ public abstract class JacksonUtils {
      * @Author dongzhihua
      * @Date 2020-02-06 09:55
      */
-    public static <T> T mapToBean(Map<String, Object> map, Class<T> cla) {
+    public static <T> T mapToBean(Map<String, String> map, Class<T> cla) {
         String json = toJson(map);
         LOGGER.info("mapToBean > json: {}", json);
+
+//        Type t = null;
+//        mapper.readValue(json, t);
         return readValue(json, cla);
     }
 }

@@ -9,7 +9,7 @@ import lombok.Data;
  * @Date 2020-02-06 09:39
  */
 @Data
-public class WxCardAuditActionBean {
+public class WxCardAuditEventBean {
     private String toUserName;
     private String fromUserName;
     private String createTime;

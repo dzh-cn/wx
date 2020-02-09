@@ -9,12 +9,12 @@ import lombok.Data;
  * @Date 2020-02-06 21:10
  */
 @Data
-public class WxCardParam {
+public class WxCreateCardBean {
     private String brandName; // 品牌名称
     private String title; // 标题
     private String logoUrl; // logo图片链接
     private String backGroundPicUrl; // 卡片背景链接
-    private String activateUrl; // 激活链接
+    private String activateUrl; // 激活链接 该链接在领卡页面展示点击激活
     private String customField1Name; // tag
     private String customField1Url;
     private String customField2Name;

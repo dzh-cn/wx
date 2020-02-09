@@ -1,0 +1,15 @@
+{
+  "isRestoreMemberCard": "1",
+  "msgType": "event",
+  "unionId": "oAAAAALeacKdruTOmqpU4dlLF0U8",
+  "isRecommendByFriend": "0",
+  "fromUserName": "oylauwX9xtuanvKxpsm8DTE-Ow_8",
+  "sourceScene": "SOURCE_SCENE_QRCODE",
+  "createTime": "1581065757",
+  "cardId": "pylauwafATlTIrt9Q1dxgn11D-YY",
+  "toUserName": "gh_bed3df181e1e",
+  "isGiveByFriend": "0",
+  "outerId": "0",
+  "event": "user_get_card",
+  "userCardCode": "108342023"
+}

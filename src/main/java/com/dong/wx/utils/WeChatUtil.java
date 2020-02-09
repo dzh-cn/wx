@@ -1,6 +1,6 @@
 package com.dong.wx.utils;
 
-import org.apache.velocity.app.Velocity;
+import com.dong.wx.exception.WeChatRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -10,25 +10,25 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 微信工具类
  */
 public class WeChatUtil {
 
-    private static String getTicketUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
     private static String getOpenidUrl = "https://api.weixin.qq.com/sns/jscode2session";
     private static String getTokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
     private static String getUserInfoUrl = "https://api.weixin.qq.com/sns/userinfo";
     private static String uploadImgUrl = "https://api.weixin.qq.com/cgi-bin/media/uploadimg?access_token=";
     private static String createCardUrl = "https://api.weixin.qq.com/card/create?access_token=";
     private static String updateCardUrl = "https://api.weixin.qq.com/card/update?access_token=";
+    private static String updateStockUrl = "https://api.weixin.qq.com/card/modifystock?access_token=";
     private static String depositCardCodeUrl = "http://api.weixin.qq.com/card/code/deposit?access_token=";
     private static String activeCardUrl = "https://api.weixin.qq.com/card/generalcard/activate?access_token=";
     private static String createGetCardQrcodeUrl = "https://api.weixin.qq.com/card/qrcode/create?access_token=";
+    private static String createGetCardH5Url = "https://api.weixin.qq.com/card/landingpage/create?access_token=";
+    private static String getApiTicketUrl = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=";
 
     private static Logger logger = LoggerFactory.getLogger(WeChatUtil.class);
     /**
@@ -157,66 +157,38 @@ public class WeChatUtil {
         logger.info("微信标准签名结果:{},data:{}", sign, data);
         return sign;
     }
+
     /**
-     * @author: lianghaifei
-     * @method  getticket
-     * @date: 2019/4/15 16:17
-     * @param accessToken
-     * @return java.lang.String
-     * @description 获取加密秘钥
+     * 获取前端h5请求票据
+     * @Author dongzhihua
+     * @Date 2020-02-09 22:20
      */
-    public static String getticket(String accessToken, String type){
-        BufferedReader in = null;
-        logger.info("微信获取加密秘钥,accessToken:{},type:{}", accessToken, type);
-        //根据accesstoken获取秘钥，拿到的access_token 采用http GET方式请求获得jsapi_ticket（有效期7200秒，开发者必须在自己的服务全局缓存jsapi_ticket）
-        // 成功返回如下JSON：
-        //{
-        //"errcode":0,
-        //"errmsg":"ok",
-        //"ticket":"bxLdikRXVbTPdHSM05e5u5sUoXNKd8-41ZO3MhKoyN5OfkWITDGgnr2fwJ0m9E8NYzWKVZvdVtaUgWvsdshFKA",
-        //"expires_in":7200
-        //}
-        StringBuilder urlBuf = new StringBuilder(getTicketUrl);
-        urlBuf.append("?access_token=");
-        urlBuf.append(accessToken);
-        urlBuf.append("&type=");
-        urlBuf.append(StringUtils.hasText(type) ? type : "jsapi");
+    public static Map<String, Object> getApiTicket(String accessToken) {
+        String url = getApiTicketUrl + accessToken + "&type=wx_card";
 
-        logger.info("微信获取加密秘钥url:{},accessToken:{},type:{}",
-                urlBuf, accessToken, type);
-//        String url="https://api.weixin.qq.com/sns/jscode2session?appid=" + appid + "&secret=" + secret + "&js_code=" + code + "&grant_type=authorization_code";
         try {
-            URL weChatUrl = new URL(urlBuf.toString());
-            // 打开和URL之间的连接
-            URLConnection connection = weChatUrl.openConnection();
-            // 设置通用的请求属性
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-            // 建立实际的连接
-            connection.connect();
-            // 定义 BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuffer sb = new StringBuffer();
-            String line;
-            while ((line = in.readLine()) != null) {
-                sb.append(line);
-            }
-            logger.info("微信获取加密秘钥结果:{},accessToken:{}", sb, accessToken);
-            return sb.toString();
-
-        } catch (Exception e1) {
-            logger.info("微信获取加密秘钥异常,accessToken:{}", accessToken, e1);
-            throw new RuntimeException(e1);
-        }  finally {//使用finally块来关闭输入流
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
+            String res = sendGet(url);
+            return assertAndConvert(res);
+        } catch (Exception e) {
+            throw new RuntimeException("获取前端api票据异常", e);
         }
     }
+
+    /**
+     * 数据签名标准接口
+     * @Author dongzhihua
+     * @Date 2020-02-09 22:06
+     */
+    public static String signature(Collection<String> collection){
+        logger.info("微信标准签名数据,data:{}", collection);
+
+        List<String> list = new ArrayList<>(collection);
+        Collections.sort(list);
+        String data = StringUtils.collectionToDelimitedString(list, "");
+
+        return signature(data);
+    }
+
     /**
      * @author: lianghaifei
      * @method  getAccessToken
@@ -257,12 +229,11 @@ public class WeChatUtil {
             is.read(jsonBytes);
             String message = new String(jsonBytes, "UTF-8");
 
-            Map demoJson = JacksonUtils.readValue(message, Map.class);
-            logger.info("JSON字符串：{}", demoJson);
+            Map<String, Object> demoJson = assertAndConvert(message);
             access_token = demoJson.get("access_token").toString();
             is.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("获取微信AccessToken 异常", e);
         }
         return access_token;
     }
@@ -320,6 +291,7 @@ public class WeChatUtil {
      * 上传图片
      * @Author dongzhihua
      * @Date 2020-02-03 18:03
+     * @return url
      */
     public static String uploadImg(String accessToken, File file) {
         String urlStr = uploadImgUrl + accessToken;
@@ -392,13 +364,16 @@ public class WeChatUtil {
             close(reader);
             close(in);
         }
-        return res;
+        Map<String, Object> demoJson = assertAndConvert(res);
+
+        return demoJson.get("url") + "";
     }
 
     /**
      * 保存卡片，通过模板
      * @Author dongzhihua
      * @Date 2020-02-06 21:00
+     * @return card_id
      */
     public static String saveCardByTemplate(String accessToken, String paramTemplate, Object templateParam, boolean isCreate) {
         String json = VelocityUtil.evaluate(paramTemplate, templateParam);
@@ -409,6 +384,7 @@ public class WeChatUtil {
      * 保存卡片
      * @Author dongzhihua
      * @Date 2020-02-06 21:00
+     * @return card_id
      */
     public static String saveCard(String accessToken, String param, boolean isCreate) {
 
@@ -419,7 +395,9 @@ public class WeChatUtil {
             url = updateCardUrl + accessToken;
         }
         try {
-            return sendPost(url, param);
+            String res = sendPost(url, param);
+            Map<String, Object> map = assertAndConvert(res);
+            return map.get("card_id") + "";
         } catch (Exception e) {
             throw new RuntimeException("创建通用卡异常", e);
         }
@@ -501,7 +479,10 @@ public class WeChatUtil {
 
         try {
             String param = VelocityUtil.evaluate(paramTemp, map);
-            return saveCard(accessToken, param, isCreate);
+            String res = saveCard(accessToken, param, isCreate);
+
+            Map<String, Object> resMap = assertAndConvert(res);
+            return resMap.get("card_id") + "";
         } catch (Exception e) {
             throw new RuntimeException("创建通用卡异常", e);
         }
@@ -511,16 +492,40 @@ public class WeChatUtil {
      * 导入卡号
      * @Author dongzhihua
      * @Date 2020-02-03 18:50
+     * succ_code	成功个数
+     * duplicate_code	重复导入的code会自动被过滤。
+     * fail_code	失败个数。
      */
-    public static String depositCardCode(String accessToken, String cardId, List<String> codes) {
+    public static Map<String, Object> depositCardCode(String accessToken, String cardId, List<String> codes) {
         try {
             Map<String, Object> param = new HashMap<>();
             param.put("card_id", cardId);
             param.put("code", codes);
-            String str = JacksonUtils.toJson(param);
-            return sendPost(depositCardCodeUrl + accessToken, str);
+            String str = JsonUtils.toJson(param);
+            String res = sendPost(depositCardCodeUrl + accessToken, str);
+            return assertAndConvert(res);
         } catch (Exception e) {
             throw new RuntimeException("导入卡号异常", e);
+        }
+    }
+
+    /**
+     * 修改库存
+     * @Author dongzhihua
+     * @Date 2020-02-08 23:41
+     */
+    public static void updateStock(String accessToken, String cardId, int increase, int reduce) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("card_id", cardId);
+        map.put("increase_stock_value", increase);
+        map.put("reduce_stock_value", reduce);
+        try {
+            String res = sendPost(updateStockUrl + accessToken, JsonUtils.toJson(map));
+            assertAndConvert(res);
+
+        } catch (Exception e) {
+            throw new RuntimeException("生成领卡二维码异常", e);
         }
     }
 
@@ -551,6 +556,56 @@ public class WeChatUtil {
         } catch (Exception e) {
             throw new RuntimeException("生成领卡二维码异常", e);
         }
+    }
+
+    /**
+     * 获取领券H5（领券货架）页面
+     * @Author dongzhihua
+     * @Date 2020-02-08 23:15
+     */
+    public static String createGetCardH5(String accessToken, String cardId) {
+        try {
+            Map<String, Object> map = new HashMap<>();
+            map.put("cardId", cardId);
+            String param = "{\n" +
+                    "    \"banner\": \"http://mmbiz.qpic.cn/mmbiz_png/A5vYnILS59VktFAT5c4biaUoLakQ3icict9ibwd28dCkFdP8220jQzewLicfTPVV3ojNGw7beCAPIIaqemS8icVLIibjw/0\",\n" +
+                    "    \"page_title\": \"校园电子卡\",\n" +
+                    "    \"can_share\": false,\n" +
+                    "    \"scene\": \"SCENE_H5\",\n" +
+                    "    \"card_list\": [\n" +
+                    "        {\n" +
+                    "            \"card_id\": \"$obj.cardId\",\n" +
+                    "            \"thumb_url\": \"http://mmbiz.qpic.cn/mmbiz_jpg/A5vYnILS59VktFAT5c4biaUoLakQ3icict9mLJwsOXHzIkmicESem65TGlSibUSYfsfPRLdKCL4icvJoAOkB7yMTfgBA/0\"\n" +
+                    "        }\n" +
+                    "    ]\n" +
+                    "}";
+            param = VelocityUtil.evaluate(param, map);
+            return sendPost(createGetCardH5Url + accessToken, param);
+        } catch (Exception e) {
+            throw new RuntimeException("获取领券H5异常", e);
+        }
+    }
+
+    /**
+     * 获取前端领卡请求参数
+     * @Author dongzhihua
+     * @Date 2020-02-09 22:01
+     */
+    public static Map<String, Object> getJsAddCardParam(String apiTicket, String cardId, String openId, String code) {
+        Map<String, String> cardExt = new HashMap<>();
+        cardExt.put("code", code);
+        cardExt.put("openid", openId);
+        cardExt.put("timestamp", System.currentTimeMillis() + "");
+        cardExt.put("nonce_str", code + cardId);
+        List<String> list = new ArrayList<>(cardExt.values());
+        list.add(apiTicket);
+
+        cardExt.put("signature", signature(list));
+
+        Map<String, Object> resMap = new HashMap<>();
+        resMap.put("cardId", cardId);
+        resMap.put("cardExt", cardExt);
+        return resMap;
     }
 
     /**
@@ -632,6 +687,47 @@ public class WeChatUtil {
             close(out);
             close(in);
         }
+        logger.info("post resp: {}", result);
+        return result;
+    }
+    /**
+     * 发送post请求
+     * @Author dongzhihua
+     * @Date 2020-02-03 18:08
+     */
+    public static String sendGet(String url) throws Exception {
+        logger.info("sendPost > url: {}, param: {}", url);
+        BufferedReader in = null;
+        HttpURLConnection conn = null;
+        String result = "";
+        try {
+            URL realUrl = new URL(url);
+            conn = (HttpURLConnection) realUrl.openConnection();
+            // 打开和URL之间的连接
+
+            // 发送POST请求必须设置如下两行
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setRequestMethod("GET"); // POST方法
+
+            // 设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+//            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Type","application/json");
+            conn.connect();
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } finally {
+            conn.disconnect();
+            close(in);
+        }
+        logger.info("get resp: {}", result);
         return result;
     }
 
@@ -644,8 +740,21 @@ public class WeChatUtil {
             }
         }
     }
-    public static void main(String[] args) {
-        String aa = signature("7f0949ad45bf46e4","1555590328", "http://jpay.jd.com/pay-c-ecard-m", "HoagFKDcsGMVCIY2vOjf9nEXfTGxsBl5ekoM7EOzzQa0cxkSPVvO3fCE69gbYXFFH91it2jzFsyqkSbZa3rhxQ");
-        System.out.println(aa);
+
+    /**
+     * map assert 通过转换为map
+     * @Author dongzhihua
+     * @Date 2020-02-09 22:32
+     */
+    public static Map<String, Object> assertAndConvert(String res) {
+        Map<String, Object> map = JsonUtils.readMap(res);
+        Object code = map.get("errcode");
+        boolean suc = code == null || code.toString().equals("0");
+
+        if (suc) {
+            return map;
+        }
+
+        throw new WeChatRequestException(code + "", map.get("errmsg") + "");
     }
 }

@@ -31,7 +31,7 @@ public abstract class XmlParseSaxUtil {
      */
     public static <T> T parse(File xmlFile, Class<T> cla) {
 
-        return JacksonUtils.mapToBean(parseToMap(xmlFile), cla);
+        return JsonUtils.mapToBean(parseToMap(xmlFile), cla);
     }
 
     /**
@@ -39,7 +39,7 @@ public abstract class XmlParseSaxUtil {
      * @Author dongzhihua
      * @Date 2020-02-06 09:57
      */
-    public static Map<String, Object> parseToMap(File xmlFile) {
+    public static Map<String, String> parseToMap(File xmlFile) {
         FileInputStream fis = null;
         try {
             fis = new FileInputStream(xmlFile);
@@ -58,7 +58,7 @@ public abstract class XmlParseSaxUtil {
      */
     public static <T> T parse(InputStream xmlIn, Class<T> cla) {
 
-        return JacksonUtils.mapToBean(parseToMap(xmlIn), cla);
+        return JsonUtils.mapToBean(parseToMap(xmlIn), cla);
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class XmlParseSaxUtil {
      * @Author dongzhihua
      * @Date 2020-02-06 09:58
      */
-    public static Map<String, Object> parseToMap(InputStream xmlIn) {
+    public static Map<String, String> parseToMap(InputStream xmlIn) {
         try {
             // 1、创建一个SAX解析工厂对象
             final SAXParserFactory spy = SAXParserFactory.newInstance();
@@ -88,12 +88,8 @@ public abstract class XmlParseSaxUtil {
      * @Date 2020-02-06 09:45
      */
     public static class MapHandler extends DefaultHandler {
-        private Map<String, Object> obj;
+        private Map<String, String> obj = new HashMap<>();
         private String currentTag = null; // 记录解析时的上一个节点名称
-
-        public MapHandler() {
-            obj = new HashMap<>();
-        }
 
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
@@ -109,7 +105,7 @@ public abstract class XmlParseSaxUtil {
             if (!StringUtils.hasText(content)) {
                 return;
             }
-            LoggerFactory.getLogger(MapHandler.class).info("tag: {}, content: {}", currentTag, content);
+            LoggerFactory.getLogger(MapHandler.class).debug("tagInfo - {}: {}", currentTag, content);
             this.obj.put(firstLower(currentTag), content.trim());
         }
     }

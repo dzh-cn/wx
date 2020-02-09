@@ -11,7 +11,7 @@ import java.io.Serializable;
  * @Date 2020-02-05 22:37
  */
 @Data
-public class WxGetCardActionBean implements Serializable {
+public class WxGetCardEventBean implements Serializable {
     private String toUserName;
     private String fromUserName;
     private String createTime;
