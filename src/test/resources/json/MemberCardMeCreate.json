@@ -1,0 +1,51 @@
+{
+  "card": {
+    "card_type": "$obj.cardType",
+    "$obj.cardType.key": {
+      "background_pic_url": "$obj.backGroundPicUrl",
+      "base_info": {
+        "logo_url": "$obj.logoUrl",
+        "brand_name": "$obj.brandName",
+        "code_type": "CODE_TYPE_TEXT",
+        "title": "$obj.title",
+        "color": "Color010",
+        "notice": "使用时出示此卡",
+        "description": "$obj.description",
+        "date_info": {
+          "type": "DATE_TYPE_PERMANENT"
+        },
+        "sku": {
+          "quantity": $obj.skuQuantity
+        },
+        "get_limit": 1,
+        "use_custom_code": $obj.useCustomCode,
+        "can_give_friend": $obj.canGiveFriend,
+        "custom_url_name": "$obj.customField1Name",
+        "custom_url": "$obj.custom1Url",
+        "promotion_url_name": "$obj.customField2Name",
+        "promotion_url": "$obj.custom2Url",
+        "need_push_on_view": true
+      },
+      "supply_bonus": false,
+      "supply_balance": false,
+      "prerogative": "$obj.prerogative",
+      "auto_activate": $obj.autoActivate,
+      "custom_field1": {
+        "name": "$obj.customField1Name",
+        "url": "$obj.customField1Url"
+      },
+      "custom_field2": {
+        "name": "$obj.customField2Name",
+        "url": "$obj.customField2Url"
+      },
+      "custom_field3": {
+        "name": "$obj.customField3Name",
+        "url": "$obj.customField3Url"
+      },
+      "custom_cell1": {
+        "name": "$obj.customField3Name",
+        "url": "$obj.custom3Url"
+      }
+    }
+  }
+}

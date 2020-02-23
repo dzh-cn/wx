@@ -1,81 +1,64 @@
+
+
 {
   "card": {
-    "card_type": "GROUPON",
-    "groupon": {
+    "card_type": "GENERAL_CARD",
+    "general_card": {
+      "sub_card_type": "GIFT_CARD",
+      "background_pic_url": "$obj.backGroundPicUrl",
+      "auto_activate": true,
       "base_info": {
-        "logo_url": "http://mmbiz.qpic.cn/mmbiz/iaL1LJM1mF9aRKPZJkmG8xXhiaHqkKSVMMWeN3hLut7X7hicFNjakmxibMLGWpXrEXB33367o7zHN0CwngnQY7zb7g/0",
+        "use_dynamic_code": true,
+        "logo_url": "https://mmbiz.qlogo.cn/mmbiz/p98FjXy8LaeMq67mEpDmkj05EtiaVcGOibVaVux3Agib1ibcHFkCoic7HuQWFawx9XGCNWIO085drjdxTib2nBHlYGAA/0?wx_fmt=gif",
         "brand_name": "京东数字科技",
-        "code_type": "CODE_TYPE_NONE",
-        "title": "北京大学校园卡",
-        "color": "Color010",
-        "notice": "使用时出示此卡",
-        "service_phone": "",
-        "description": "请确认您是该校成员再领取",
+        "code_type": "CODE_TYPE_TEXT",
+        "title": "家里蹲大学校园卡",
+        "sub_title": "校园电子卡",
+        "color": "Color020",
+        "notice": "请出示二维码",
+        "description": "校园出入和消费凭证",
         "date_info": {
           "type": "DATE_TYPE_PERMANENT"
         },
         "sku": {
-          "quantity": 5000000
+          "quantity": 500000000
         },
         "get_limit": 1,
         "use_custom_code": true,
-        "bind_openid": false,
-        "can_share": false,
+        "bind_openid": true,
         "can_give_friend": false,
-        "center_title": "微信支付",
-        "center_url": "www.qq.com",
-        "custom_url_name": "应用广场",
-        "custom_url": "http://www.qq.com",
-        "promotion_url_name": "校园一角",
-        "promotion_url": "http://www.qq.com",
-        "custom_cell_name": "学习部",
-        "custom_cell": "http://www.qq.com",
-        "source": "京东数科"
+        "need_push_on_view": true,
+        "custom_url_name": "cus广场",
+        "custom_url": "https://www.jd.com",
+        "promotion_url_name": "pro广场",
+        "promotion_url": "https://www.jd.com"
       },
-      "advanced_info": {
-        "use_condition": {
-          "accept_category": "鞋类",
-          "reject_category": "阿迪达斯",
-          "can_use_with_other_discount": true
-        },
-        "abstract": {
-          "abstract": "微信餐厅推出多种新季菜品，期待您的光临",
-          "icon_url_list": [
-            "http://mmbiz.qpic.cn/mmbiz/p98FjXy8LacgHxp3sJ3vn97bGLz0ib0Sfz1bjiaoOYA027iasqSG0sj
-            piby4vce3AtaPu6cIhBHkt6IjlkY9YnDsfw/0
-            "
-          ]
-        },
-        "text_image_list": [
-          {
-            "image_url": "http://mmbiz.qpic.cn/mmbiz/p98FjXy8LacgHxp3sJ3vn97bGLz0ib0Sfz1bjiaoOYA027iasqSG0sjpiby4vce3AtaPu6cIhBHkt6IjlkY9YnDsfw/0",
-            "text": "此菜品精选食材，以独特的烹饪方法，最大程度地刺激食 客的味蕾"
-          },
-          {
-            "image_url": "http://mmbiz.qpic.cn/mmbiz/p98FjXy8LacgHxp3sJ3vn97bGLz0ib0Sfz1bjiaoOYA027iasqSG0sj piby4vce3AtaPu6cIhBHkt6IjlkY9YnDsfw/0",
-            "text": "此菜品迎合大众口味，老少皆宜，营养均衡"
-          }
-        ],
-        "time_limit": [
-          {
-            "type": "MONDAY",
-            "begin_hour": 0,
-            "end_hour": 10,
-            "begin_minute": 10,
-            "end_minute": 59
-          },
-          {
-            "type": "HOLIDAY"
-          }
-        ],
-        "business_service": [
-          "BIZ_SERVICE_FREE_WIFI",
-          "BIZ_SERVICE_WITH_PET",
-          "BIZ_SERVICE_FREE_PARK",
-          "BIZ_SERVICE_DELIVER"
-        ]
+      "supply_bonus": true,
+      "supply_balance": false,
+      "custom_field1": {
+        "name_type": "FIELD_NAME_TYPE_LEVEL",
+        "name": "name1",
+        "url": "www.jd.com"
       },
-      "deal_detail": "以下锅底2选1（有菌王锅、麻辣锅、大骨锅、番茄锅、清补 凉锅、酸菜鱼锅可选）：\n大锅1份 12元\n小锅2份 16元 "
+      "custom_field2": {
+        "name_type": "FIELD_NAME_TYPE_COUPON",
+        "name": "name2",
+        "url": "www.baidu.com"
+      },
+      "custom_field3": {
+        "name": "name3",
+        "url": "www.baidu.com"
+      },
+      "custom_cell1": {
+        "name": "使用入口1",
+        "tips": "激活后显示",
+        "url": "http://www.qq.com"
+      },
+      "custom_cell2": {
+        "name": "使用入口2",
+        "tips": "激活后显示",
+        "url": "http://www.qq.com"
+      }
     }
   }
 }

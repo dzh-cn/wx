@@ -1,5 +1,11 @@
 server:
-  port: 80
+  port: 443
+  ssl:
+    enabled: true
+    key-alias: tomcat
+    key-store: server.keystore
+    key-store-type: JKS
+    key-store-password: 1qaz@WSX
 spring:
   redis:
     host: 47.98.39.157
