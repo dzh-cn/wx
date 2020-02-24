@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class MiniUtil {
 
-    public static final String code2sessionUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=&s&js_code=&s&grant_type=authorization_code";
+    public static final String code2sessionUrl = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code";
 
     public static MiniCode2SessionRes code2Sesion(String appId, String secret, String code) {
         String url = String.format(code2sessionUrl, appId, secret, code);

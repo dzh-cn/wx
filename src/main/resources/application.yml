@@ -1,7 +1,7 @@
 server:
-  port: 443
+  port: 80
   ssl:
-    enabled: true
+    enabled: false
     key-alias: tomcat
     key-store: server.keystore
     key-store-type: JKS
