@@ -74,8 +74,8 @@ public class WxUtilTest {
     public void addCard() throws IOException {
         String beanJson = FileUtils.readFileToString(new ClassPathResource("beans/WxSaveCardBean.json").getFile(), "utf8");
         WxSaveCardBean bean = JsonUtils.readValue(beanJson, WxSaveCardBean.class);
-        bean.setCardType(CardType.MEMBER_CARD);
-        bean.setTitle("吃饭会员卡");
+        bean.setCardType(CardType.GENERAL_CARD);
+        bean.setTitle("光邻吧");
         String res = WxUtil.saveCard(getAccessToken(), bean);
         setCardId(res);
         System.out.println(res);
@@ -109,7 +109,6 @@ public class WxUtilTest {
         WxSaveCardBean bean = JsonUtils.readValue(beanJson, WxSaveCardBean.class);
         bean.setCardType(CardType.MEMBER_CARD);
         bean.setTitle("洗头会员卡");
-
 
         String card_id = WxUtil.saveCardByTemplate(getAccessToken(), tem, bean);
         setCardId(card_id);
@@ -153,10 +152,11 @@ public class WxUtilTest {
 
     @Test
     public void createGetCardQrcode() {
-        String code = "L00006";
+        String code = "X339";
         String cardId = getCardId();
+//        String cardId = "ptC9mtyvrvouv2yIt1DMzYVrS3kM";
         String openId = wxAppConf.getOpenId();
-        String res = WxUtil.createGetCardQrcode(getAccessToken(), cardId, code, openId);
+        String res = WxUtil.createGetCardQrcode(getAccessToken(), cardId, code, "");
         System.out.println(res);
         assertRes(res);
         System.out.println(res.replaceAll("\\\\", ""));
@@ -196,6 +196,10 @@ public class WxUtilTest {
         param.put("name", "dzh");
         String res = HttpUtil.sendPost("http://localhost:8080/t", JsonUtils.toJson(param));
         System.out.println(res);
+    }
+
+    public static void main(String[] args) {
+        WxUtil.getJsAddCardParam("Ticket", "CardId", "OpenId", "Code");
     }
 
     void assertRes(String res) {

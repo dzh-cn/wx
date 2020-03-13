@@ -2,14 +2,16 @@ package com.jd.jr.wx.utils;
 
 import com.jd.jr.wx.beans.WxGetCardEventBean;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
+import java.io.IOException;
 
 class XmlParseSaxUtilTest {
 
     @Test
-    void parse() {
-        File file = new File("/Users/dongzhihua/Documents/project/wx/src/test/resources/xml/WxGetCardEventParam.xml");
+    void parse() throws IOException {
+        File file = new ClassPathResource("xml/WxMsgEventHandle.xml").getFile();
         Object bean = XmlParseSaxUtil.parseToMap(file);
         String s = JsonUtils.toJson(bean);
         System.out.println(JsonUtils.toJson(s));

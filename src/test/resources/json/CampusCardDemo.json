@@ -1,0 +1,48 @@
+{
+  "card": {
+    "card_type": "$obj.cardType",
+    "$obj.cardType.key": {
+      "sub_card_type": "TRAFFIC_CARD",
+      "base_info": {
+        "use_dynamic_code": true,
+        "logo_url": "https://mmbiz.qlogo.cn/mmbiz/p98FjXy8LaeMq67mEpDmkj05EtiaVcGOibVaVux3Agib1ibcHFkCoic7HuQWFawx9XGCNWIO085drjdxTib2nBHlYGAA/0?wx_fmt=gif",
+        "brand_name": "STARBUCKS",
+        "code_type": "CODE_TYPE_QRCODE",
+        "title": "微信咖啡厅",
+        "color": "Color020",
+        "notice": "使用时向服务员出示",
+        "service_phone": "020-88888888",
+        "description": "不可与其他优惠同享",
+        "date_info": {
+          "type": "DATE_TYPE_FIX_TIME_RANGE",
+          "begin_timestamp": 1584091124,
+          "end_timestamp": 1594091124
+        },
+        "sku": {
+          "quantity": 50000000
+        },
+        "get_limit": 10,
+        "use_custom_code": false,
+        "can_give_friend": true,
+        "location_id_list": [
+          213059884
+        ],
+        "custom_url_name": "新品推荐",
+        "custom_url": "https://www.starbucks.com.cn/",
+        "need_push_on_view": true
+      },
+      "supply_bonus": true,
+      "supply_balance": false,
+      "prerogative": "通用卡享受更多优惠",
+      "activate_url": "www.qq.com",
+      "custom_field1": {
+        "name_type": "FIELD_NAME_TYPE_LEVEL",
+        "url": "http://mp.weixin.qq.com/s?__biz=MjM5Mzc0OTEwMA==&mid=402699549&idx=1&sn=1fe0eb3fb0041e3f10b755c5470c7db3#rd"
+      },
+      "custom_field2": {
+        "name_type": "FIELD_NAME_TYPE_COUPON",
+        "url": "https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3be6367203f983ac&redirect_uri=https%3A%2F%2Fmp.weixin.qq.com%2Fbizmall%2Fcardlandingpage%3Fbiz%3DMjM5Mzc0OTEwMA%3D%3D%26page_id%3D41%26scene%3D1&response_type=code&scope=snsapi_base#wechat_redirect"
+      }
+    }
+  }
+}
