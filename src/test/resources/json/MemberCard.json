@@ -14,15 +14,20 @@
         "date_info": {
           "type": "DATE_TYPE_PERMANENT"
         },
+        "pay_info": {
+          "swipe_card": {
+            "is_swipe_card": true
+          }
+        },
         "sku": {
-          "quantity": 0
+          "quantity": 10000
         },
         "get_limit": 1,
         "use_custom_code": true,
         "can_give_friend": false,
-        "custom_url_name": "$obj.customField1Name",
+        "custom_url_name": "cus_url",
         "custom_url": "$obj.custom1Url",
-        "promotion_url_name": "$obj.customField2Name",
+        "promotion_url_name": "prom_url",
         "promotion_url": "$obj.custom2Url",
         "need_push_on_view": true
       },
@@ -31,20 +36,24 @@
       "prerogative": "$obj.prerogative",
       "auto_activate": true,
       "custom_field1": {
-        "name": "$obj.customField1Name",
+        "name": "cus_field1",
         "url": "$obj.customField1Url"
       },
       "custom_field2": {
-        "name": "$obj.customField2Name",
+        "name": "cus_field2",
         "url": "$obj.customField2Url"
       },
       "custom_field3": {
-        "name": "$obj.customField3Name",
+        "name": "cus_field3",
         "url": "$obj.customField3Url"
       },
       "custom_cell1": {
-        "name": "$obj.customField3Name",
-        "url": "$obj.custom3Url"
+        "name": "cus_cell1",
+        "url": "$obj.customField3Url"
+      },
+      "custom_cell2": {
+        "name": "cus_cell2",
+        "url": "$obj.customField3Url"
       }
     }
   }

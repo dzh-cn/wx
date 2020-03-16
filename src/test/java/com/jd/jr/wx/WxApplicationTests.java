@@ -19,6 +19,6 @@ class WxApplicationTests {
     }
 
     public static void main(String[] args) {
-        System.out.println(URLEncoder.encode("http://hsp.jdpay.com/?appid=92&filepath=/temp/2.gif&auth=PaDLTFCTTPlosi5lRKUqp5KWhs5hPTkyJmU9MTk4MzQwNjMxMSZ0PTE1ODM0MDYzMTImZj04OV8yMDAzXzU3MF83OSZyPVNaWWw3MVhrdVE="));
+
     }
 }

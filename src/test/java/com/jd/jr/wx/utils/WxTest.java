@@ -16,8 +16,8 @@ public class WxTest extends WxUtilTest {
     @Test
     public void t() throws Exception {
 //        super.refreshAccessToken();
-        saveCardByTemplate();
-//        super.addCard();
+//        saveCardByTemplate();
+        super.addCard();
 
 //        super.depositCardCode();
 //        super.updateStock();
@@ -37,8 +37,10 @@ public class WxTest extends WxUtilTest {
         String beanJson = FileUtils.readFileToString(beanResource.getFile(), "utf8");
         WxSaveCardBean bean = JsonUtils.readValue(beanJson, WxSaveCardBean.class);
 
-        ClassPathResource res = new ClassPathResource("json/CampusCardDemo.json");
+        ClassPathResource res = new ClassPathResource("json/MemberCard.json");
         String tem = FileUtils.readFileToString(res.getFile(), "utf8");
+
+        tem = VelocityUtil.evaluate(tem, bean);
 
         String cardId = WxUtil.saveCardByTemplate(accessToken, tem, bean);
         super.setCardId(cardId);

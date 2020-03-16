@@ -2,13 +2,14 @@
   "card": {
     "card_type": "$obj.cardType",
     "$obj.cardType.key": {
-      "sub_card_type": "TRAFFIC_CARD",
+      "sub_card_type": "$obj.subCardType",
+      "auto_activate": true,
       "base_info": {
         "use_dynamic_code": true,
         "logo_url": "https://mmbiz.qlogo.cn/mmbiz/p98FjXy8LaeMq67mEpDmkj05EtiaVcGOibVaVux3Agib1ibcHFkCoic7HuQWFawx9XGCNWIO085drjdxTib2nBHlYGAA/0?wx_fmt=gif",
-        "brand_name": "STARBUCKS",
+        "brand_name": "$obj.brandName",
         "code_type": "CODE_TYPE_QRCODE",
-        "title": "微信咖啡厅",
+        "title": "$obj.title",
         "color": "Color020",
         "notice": "使用时向服务员出示",
         "service_phone": "020-88888888",

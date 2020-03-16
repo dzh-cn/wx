@@ -21,7 +21,7 @@ import java.util.Map;
 
 @SpringBootTest
 public class WxUtilTest {
-    public static WxAppConf wxAppConf = WxAppConf.campls;
+    public static WxAppConf wxAppConf = WxAppConf.ze;
 
     public static String accessTokenKey = "accessToken";
     public static String cardIdKey = "cardId";
@@ -74,8 +74,9 @@ public class WxUtilTest {
     public void addCard() throws IOException {
         String beanJson = FileUtils.readFileToString(new ClassPathResource("beans/WxSaveCardBean.json").getFile(), "utf8");
         WxSaveCardBean bean = JsonUtils.readValue(beanJson, WxSaveCardBean.class);
-        bean.setCardType(CardType.GENERAL_CARD);
-        bean.setTitle("光邻吧");
+        bean.setCardId(getCardId());
+        bean.setCardType(CardType.MEMBER_CARD);
+        bean.setNavigationMap(new HashMap<>());
         String res = WxUtil.saveCard(getAccessToken(), bean);
         setCardId(res);
         System.out.println(res);
@@ -152,11 +153,11 @@ public class WxUtilTest {
 
     @Test
     public void createGetCardQrcode() {
-        String code = "X339";
+        String code = "q1101110";
         String cardId = getCardId();
-//        String cardId = "ptC9mtyvrvouv2yIt1DMzYVrS3kM";
+//        String cardId = "ptC9mt_yC9GPRhYfqq8y2QHXWu18";// 野鸡大学 ptC9mt_sRzNVciSY8VU03oSCcHyQ
         String openId = wxAppConf.getOpenId();
-        String res = WxUtil.createGetCardQrcode(getAccessToken(), cardId, code, "");
+        String res = WxUtil.createGetCardQrcode(getAccessToken(), cardId, code, openId);
         System.out.println(res);
         assertRes(res);
         System.out.println(res.replaceAll("\\\\", ""));
@@ -175,7 +176,7 @@ public class WxUtilTest {
 
     @Test
     public void getApiTicket() {
-        Object apiTicket = WxUtil.getApiTicket(getAccessToken());
+        Object apiTicket = WxUtil.getApiTicket(getAccessToken(), null);
         System.out.println(apiTicket);
     }
 
@@ -191,15 +192,17 @@ public class WxUtilTest {
     }
 
     @Test
+    public void unavailableCard() {
+        String code = "Y3398882";
+        WxUtil.unavailableCard(getAccessToken(), getCardId(), code, code);
+    }
+
+    @Test
     public void httpPost() throws Exception {
         Map<String, Object> param = new HashMap<>();
         param.put("name", "dzh");
         String res = HttpUtil.sendPost("http://localhost:8080/t", JsonUtils.toJson(param));
         System.out.println(res);
-    }
-
-    public static void main(String[] args) {
-        WxUtil.getJsAddCardParam("Ticket", "CardId", "OpenId", "Code");
     }
 
     void assertRes(String res) {
