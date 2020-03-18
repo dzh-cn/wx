@@ -1,10 +1,11 @@
 package com.jd.jr.wx.helper;
 
 import com.jd.jr.wx.utils.JsonUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,15 +17,12 @@ import org.springframework.stereotype.Component;
  * @Author dongzhihua
  * @Date 2020-02-10 22:21
  */
-@Slf4j
 @Aspect
 @Component
 public class LogHelper {
+
     @Pointcut("@annotation(com.jd.jr.wx.helper.LogHelper.LogReqResp)")
     public void logReqResp() {
-    }
-    @Pointcut("@annotation(com.jd.jr.wx.helper.LogHelper.FacadeLogReqResp)")
-    public void facadeLogReqResp() {
     }
 
     @Before("logReqResp()")
@@ -40,22 +38,7 @@ public class LogHelper {
     )
     public void logResp(JoinPoint joinPoint, Object resp) {
         Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
-        logger.info("{} -> resp: {}", this.getMethodName(joinPoint), resp);
-    }
-
-    @Around("facadeLogReqResp()")
-    public Object around(ProceedingJoinPoint joinPoint) {
-        Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
-        try {
-            Object[] args = joinPoint.getArgs();
-            logReqArgs(logger, getMethodName(joinPoint), args);
-            Object resp = joinPoint.proceed();
-            logger.info("{} -> resp: {}", this.getMethodName(joinPoint), resp);
-            return resp;
-        } catch (Throwable e) {
-            logger.error("处理异常", e);
-        }
-        return null;
+        logger.info("LogHelper {} -> 返回值: {}", this.getMethodName(joinPoint), resp);
     }
 
     String getMethodName(JoinPoint joinPoint) {
@@ -66,17 +49,20 @@ public class LogHelper {
     void logReqArgs(Logger logger, String methodName, Object[] args) {
 
         if(args == null || args.length == 0) {
-            logger.info("{}", methodName);
+            logger.info("LogHelper {}", methodName);
         } else if (args.length == 1) {
-            logger.info("{} -> req: {}", methodName, JsonUtils.toJson(args[0]));
+            logger.info("LogHelper {} -> 参数: {}", methodName, JsonUtils.toJson(args[0]));
         } else {
-            logger.info("{} -> req: {}", methodName, JsonUtils.toJson(args));
+            logger.info("LogHelper {} -> 参数: {}", methodName, JsonUtils.toJson(args));
         }
     }
 
+    /**
+     * 打印入参和返回值
+     * 注：不能用于jsf接口实现
+     * dongzhihua
+     * 2020/3/6 10:46
+     **/
     public @interface LogReqResp {
-    }
-
-    public @interface FacadeLogReqResp {
     }
 }

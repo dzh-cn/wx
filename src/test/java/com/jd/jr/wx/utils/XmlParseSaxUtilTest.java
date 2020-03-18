@@ -6,6 +6,8 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 class XmlParseSaxUtilTest {
 
@@ -17,5 +19,10 @@ class XmlParseSaxUtilTest {
         System.out.println(JsonUtils.toJson(s));
         WxGetCardEventBean wgc = JsonUtils.readValue(s, WxGetCardEventBean.class);
         System.out.println(JsonUtils.toJson(wgc));
+    }
+
+    @Test
+    void t() {
+        System.out.println(URLEncoder.encode("?"));
     }
 }

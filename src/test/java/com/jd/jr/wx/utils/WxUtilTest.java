@@ -75,10 +75,12 @@ public class WxUtilTest {
         String beanJson = FileUtils.readFileToString(new ClassPathResource("beans/WxSaveCardBean.json").getFile(), "utf8");
         WxSaveCardBean bean = JsonUtils.readValue(beanJson, WxSaveCardBean.class);
         bean.setCardId(getCardId());
+
         bean.setCardType(CardType.MEMBER_CARD);
-        bean.setNavigationMap(new HashMap<>());
         String res = WxUtil.saveCard(getAccessToken(), bean);
-        setCardId(res);
+        if(bean.getCardId() == null) {
+            setCardId(res);
+        }
         System.out.println(res);
     }
 
@@ -193,7 +195,7 @@ public class WxUtilTest {
 
     @Test
     public void unavailableCard() {
-        String code = "Y3398882";
+        String code = "q1101110";
         WxUtil.unavailableCard(getAccessToken(), getCardId(), code, code);
     }
 
