@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.dong</groupId>
-    <artifactId>wx</artifactId>
+    <artifactId>wx-web</artifactId>
     <version>1.0</version>
     <name>wx</name>
     <description>Demo project for Spring Boot</description>
