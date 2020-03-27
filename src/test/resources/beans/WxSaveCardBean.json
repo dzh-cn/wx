@@ -1,10 +1,11 @@
 {
   "cardType": "GENERAL_CARD",
   "subCardType": "GIFT_CARD",
+  "obtainMaxCount": "10",
   "brandName": "京东数字科技",
   "title": "北京外语学院校园卡",
   "useCustomCode": true,
-  "skuQuantity": 10,
+  "skuQuantity": 10000000,
   "logoUrl": "http://mmbiz.qpic.cn/mmbiz_png/A5vYnILS59VktFAT5c4biaUoLakQ3icict9ibwd28dCkFdP8220jQzewLicfTPVV3ojNGw7beCAPIIaqemS8icVLIibjw/0",
   "backGroundPicUrl": "http://mmbiz.qpic.cn/mmbiz_jpg/A5vYnILS59VktFAT5c4biaUoLakQ3icict9mLJwsOXHzIkmicESem65TGlSibUSYfsfPRLdKCL4icvJoAOkB7yMTfgBA/0",
   "navigationMap": {

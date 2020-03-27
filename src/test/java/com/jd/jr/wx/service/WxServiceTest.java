@@ -14,6 +14,8 @@ class WxServiceTest {
     @Test
     void sayHello() {
 
-        System.out.println(wxService.sayHello("dong"));
+//        System.out.println(wxService.sayHello("dong"));
+        System.out.println(wxService.sayHello());
+//        System.out.println(wxService.sayHello("dong", "zhihua"));
     }
 }

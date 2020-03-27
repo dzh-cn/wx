@@ -21,7 +21,7 @@ import java.util.Map;
 
 @SpringBootTest
 public class WxUtilTest {
-    public static WxAppConf wxAppConf = WxAppConf.ze;
+    public static WxAppConf wxAppConf = WxAppConf.campls;
 
     public static String accessTokenKey = "accessToken";
     public static String cardIdKey = "cardId";
@@ -74,7 +74,7 @@ public class WxUtilTest {
     public void addCard() throws IOException {
         String beanJson = FileUtils.readFileToString(new ClassPathResource("beans/WxSaveCardBean.json").getFile(), "utf8");
         WxSaveCardBean bean = JsonUtils.readValue(beanJson, WxSaveCardBean.class);
-        bean.setCardId(getCardId());
+//        bean.setCardId(getCardId());
 
         bean.setCardType(CardType.MEMBER_CARD);
         String res = WxUtil.saveCard(getAccessToken(), bean);
@@ -155,11 +155,9 @@ public class WxUtilTest {
 
     @Test
     public void createGetCardQrcode() {
-        String code = "q1101110";
-        String cardId = getCardId();
-//        String cardId = "ptC9mt_yC9GPRhYfqq8y2QHXWu18";// 野鸡大学 ptC9mt_sRzNVciSY8VU03oSCcHyQ
+        String code = "1001";
         String openId = wxAppConf.getOpenId();
-        String res = WxUtil.createGetCardQrcode(getAccessToken(), cardId, code, openId);
+        String res = WxUtil.createGetCardQrcode(getAccessToken(), getCardId(), code, openId);
         System.out.println(res);
         assertRes(res);
         System.out.println(res.replaceAll("\\\\", ""));
@@ -185,8 +183,8 @@ public class WxUtilTest {
     @Test
     public void activeCard() {
 //  {"isRestoreMemberCard":"1","msgType":"event","unionId":"oAAAAALeacKdruTOmqpU4dlLF0U8","isRecommendByFriend":"0","fromUserName":"oylauwX9xtuanvKxpsm8DTE-Ow_8","sourceScene":"SOURCE_SCENE_QRCODE","createTime":"1581178818","cardId":"pylauwQXtGhkRoaG-SFkkIwkHmzw","toUserName":"gh_bed3df181e1e","isGiveByFriend":"0","outerId":"0","event":"user_get_card","userCardCode":"L00001"}
-        String code = "L00001";
-        String cardNo = "L00001";
+        String code = "1001";
+        String cardNo = "1001";
         String cardId = getCardId();
         String res = WxUtil.activeCard(getAccessToken(), code, cardNo, cardId);
         System.out.println(res);
@@ -194,9 +192,20 @@ public class WxUtilTest {
     }
 
     @Test
-    public void unavailableCard() {
-        String code = "q1101110";
+    public void unAvailableCard() {
+        String code = "1001";
         WxUtil.unavailableCard(getAccessToken(), getCardId(), code, code);
+    }
+
+    @Test
+    public void deleteCardTemplate() {
+        WxUtil.deleteCardTemplate(getAccessToken(), getCardId());
+    }
+
+    @Test
+    public void unActiveCard() {
+        String code = "1001";
+        WxUtil.unActivateCard(getAccessToken(), getCardId(), code);
     }
 
     @Test

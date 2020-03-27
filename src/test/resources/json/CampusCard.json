@@ -4,7 +4,7 @@
   "card": {
     "card_type": "GENERAL_CARD",
     "general_card": {
-      "sub_card_type": "GIFT_CARD",
+      "sub_card_type": "$obj.subCardType",
       "background_pic_url": "$obj.backGroundPicUrl",
       "auto_activate": true,
       "base_info": {
@@ -23,9 +23,9 @@
         "sku": {
           "quantity": 500000000
         },
-        "get_limit": 1,
+        "get_limit": "$obj.obtainMaxCount",
         "use_custom_code": true,
-        "bind_openid": true,
+        "bind_openid": false,
         "can_give_friend": false,
         "need_push_on_view": true,
         "custom_url_name": "cus广场",

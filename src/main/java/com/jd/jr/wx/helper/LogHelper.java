@@ -1,5 +1,6 @@
 package com.jd.jr.wx.helper;
 
+import com.jd.jr.wx.utils.JsonUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -11,7 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -25,7 +29,7 @@ import java.util.Arrays;
 @Component
 public class LogHelper {
 
-    @Pointcut("@annotation(com.jd.jr.wx.helper.Log)")
+    @Pointcut("@annotation(com.jd.jr.wx.helper.LogHelper.LogReqResp)")
     public void log() {
         System.out.println("..................");
     }
@@ -43,29 +47,53 @@ public class LogHelper {
     )
     public void logResp(JoinPoint joinPoint, Object resp) {
         Logger logger = LoggerFactory.getLogger(joinPoint.getTarget().getClass());
-        logger.info("LogHelper {} -> 返回值: {}", this.getMethodName(joinPoint), resp);
+        logger.info("{} <- 返回值: {}", this.getMethodName(joinPoint), resp);
     }
 
     String getMethodName(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature)joinPoint.getSignature();
         Method method = signature.getMethod();
-        Annotation[] annotations = method.getAnnotations();
-        Annotation[] declaredAnnotations = method.getDeclaredAnnotations();
-        Log annotation = method.getDeclaredAnnotation(Log.class);
-        if (annotation!=null && StringUtils.hasText(annotation.m())) {
-            return annotation.m();
+        LogReqResp annotation = method.getDeclaredAnnotation(LogReqResp.class);
+        if (annotation!=null && StringUtils.hasText(annotation.desc())) {
+            return annotation.desc();
         }
         return method.getName();
     }
 
     void logReqArgs(Logger logger, String methodName, Object[] args) {
-
-        if(args == null || args.length == 0) {
-            logger.info("LogHelper {}", methodName);
-        } else if (args.length == 1) {
-            logger.info("LogHelper {} -> 参数: {}", methodName, args[0]);
-        } else {
-            logger.info("LogHelper {} -> 参数: {}", methodName, Arrays.toString(args));
+        if (args == null || args.length == 0) {
+            logger.info("{} -> ", methodName);
+            return;
         }
+        Object logRes = JsonUtils.toJson(args);
+        // 如果序列化出现问题
+        if(logRes == null) {
+            if ( args.length == 1) {
+                logRes = args[0];
+            } else {
+                logRes = Arrays.toString(args);
+            }
+        }
+        logger.info("{} -> 参数: {}", methodName, logRes);
+    }
+
+    /**
+     * 打印入参和返回值
+     * 注：不能用于jsf
+     * dongzhihua
+     * 2020/3/6 10:46
+     **/
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target({ElementType.METHOD})
+    public @interface LogReqResp {
+        /**
+         * 方法描述
+         */
+        String desc() default "";
+
+        /**
+         * 日志级别
+         */
+        String level() default "INFO";
     }
 }

@@ -23,7 +23,7 @@ public class CardCtl {
     String appId = WxAppConf.campls.getApp();
 
     @RequestMapping("open")
-    String card(Model model, HttpServletRequest request) {
+    String card(Model model, String code) {
         String url = "http://www.jauking.xyz/wx/card/open";
 
         Map<String, Object> apiTicketRes = WxUtil.getApiTicket(getAccessToken(), ApiTicketType.jsApi);
@@ -49,12 +49,11 @@ public class CardCtl {
         model.addAttribute("url", url);
 
 
-        String card_id = "ptC9mt_yC9GPRhYfqq8y2QHXWu18";
+        String card_id = redisTemplate.opsForValue().get("cardId");
         model.addAttribute("cardId", card_id);
         Map<String, Object> cardTicketRes = WxUtil.getApiTicket(getAccessToken(), ApiTicketType.wxCard);
         System.out.println("cardTicketRes: " + cardTicketRes);
         String cardTicket = cardTicketRes.get("ticket").toString();
-        String code = "2003008";
         String openid = "otC9mt_XtmNkWmOi1iLf5D8FBDeM";
         String timestamp1 = WxUtil.getTimestamp();
         String nonce_str = WxUtil.getNonceStr();
